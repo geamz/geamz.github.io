@@ -20,7 +20,7 @@ window.addEventListener("load",()=>{
         xmlhttp.onreadystatechange = function () {
             if ( xmlhttp.readyState == 4 && xmlhttp.status == 200 ) {
                 const data = xmlhttp.responseText;
-                document.body.append( data );
+                document.body.innerHTML = data;
                 return data;
             }
         }
