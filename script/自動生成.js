@@ -110,7 +110,7 @@ class Theji{
     }
 }
 
-ptyol = () => {
+const ptyol = () => {
 
     let _r_; /*ランダム入れ場*/
 
