@@ -202,7 +202,7 @@ ptyol = () => {
             } while ( i !== 0 && _flag.cvcv === 0 && ( _t_.shu === "接近" || ["sc", "cs", "sh", "gz", "zg", "gs", "gz", "cj", "jc"].includes( _flag.iqo.igil + _t_.igil ) || _flag.iqo.bui === _t_.bui ) )
 
             /*促音*/
-            if( flag.cvcv === 1 && (_flag.cvcv === 1 || _flag.cvcv === 2) && haku !== 1 && i !== 1 && i != haku-1 && ["r","h"].includes( _t_.igil ) && Math.random() < 0.5 ){
+            if( flag.cvcv === 1 && _flag.cvcv > 0 && haku !== 1 && i !== 1 && i != haku-1 && ["r","h"].includes( _t_.igil ) && Math.random() < 0.5 ){
                 theji.kakus.push( _t_.igil );
                 theji.cvcvs.push( 3 );
                 i++;
@@ -222,7 +222,7 @@ ptyol = () => {
         }
 
         /*母音*/
-        if( flag.cvcv !== 0 ){
+        if( flag.cvcv > 0 ){
             if( i === 0 && Math.random() < 0.03 ){
                 /*音節主音*/
                 _t_ = bion[Math.floor(Math.random() * bion.length)].copy();
