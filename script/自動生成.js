@@ -121,14 +121,13 @@ ptyol = () => {
 
     /*拍数決め*/    
     let haku = 1;
-    const haku_p = [0.03, 0.24, 0.75, 0.98, 0.990, 0.995, 1.00];
+    const haku_p = [0.03, 0.24, 0.75, 0.99, 0.995, 1.00];
     _r_ = Math.random();
     while (_r_ > haku_p[haku - 1]) {
         haku++;
     }
     
-    const all_open = Math.random() < 0.1;
-
+    const all_open = Math.random() < 0.3;
 
 
     /*それぞれの拍にて*/
@@ -139,6 +138,8 @@ ptyol = () => {
         cvcv: NaN,  // 1
         iqo: null,    // /a/
         lo: false,
+        cc: false,
+        shuon: false
     };
     Object.freeze( _flag );
 
@@ -158,28 +159,42 @@ ptyol = () => {
             cvcv: NaN,  // 1
             iqo: null,    // /a/
             lo: false,
+            cc: false,
+            shuon: false
         };
 
         let kaku_p = [ 0.15, 0.65, 1.00 ];
 
-        if( haku === 1 || all_open ){
-            flag.cvcv = 2;
+        if( haku === 1 ){
+            flag.cvcv = 1;
+        }else if( all_open ){
+            if( Math.random() < 0.1 ){
+                flag.cvcv = 2;
+            }else{
+                flag.cvcv = 1;
+            }
         }else{
             _r_ = Math.random();
             flag.cvcv = 0;
             while( _r_ > kaku_p[ flag.cvcv ] ){
                 flag.cvcv++;
             }
-            if( _flag.cvcv === 0 && flag.cvcv === 2 ){
+            if( (_flag.cvcv === 0 && flag.cvcv === 2) || ( flag.cc && flag.cvcv === 0 && Math.random() < 0.8 ) ){
                 flag.cvcv = 1;
+                flag.cc = false;
             }
         }
+
+        if( _flag.cvcv === 0 && flag.cvcv === 0 ){
+            flag.cc = true;
+        }
+
         
         /* 音決め */
 
         let _t_;
 
-        if( flag.cvcv !== 2 ){
+        if( flag.cvcv < 2 ){
 
             /*子音決定*/
             do{
@@ -187,7 +202,7 @@ ptyol = () => {
             } while ( i !== 0 && _flag.cvcv === 0 && ( _t_.shu === "接近" || ["sc", "cs", "sh", "gz", "zg", "gs", "gz", "cj", "jc"].includes( _flag.iqo.igil + _t_.igil ) || _flag.iqo.bui === _t_.bui ) )
 
             /*促音*/
-            if( flag.cvcv === 1 && (_flag.cvcv === 1 || _flag.cvcv === 2) && haku !== 1 && i !== 1 && i != haku-1 && Math.random() < 0.5 ){
+            if( flag.cvcv === 1 && (_flag.cvcv === 1 || _flag.cvcv === 2) && haku !== 1 && i !== 1 && i != haku-1 && ["r","h"].includes( _t_.igil ) && Math.random() < 0.5 ){
                 theji.kakus.push( _t_.igil );
                 theji.cvcvs.push( 3 );
                 i++;
@@ -212,6 +227,7 @@ ptyol = () => {
                 /*音節主音*/
                 _t_ = bion[Math.floor(Math.random() * bion.length)].copy();
                 _t_.shuon = true;
+                flag.shuon = true;
             }else{
                 /*母音*/
 
@@ -220,7 +236,7 @@ ptyol = () => {
                 } while ( i !== 0 && /*二重母音は回避*/ _flag.iqo === _t_ )
                 
                 /*二重母音*/
-                if( i !== 0 && i !== haku-1 && Math.random() < 0.14 && !( _flag.cvcv === 4 && flag.cvcv === 2 ) ){
+                if( i !== 0 && i !== haku-1 && Math.random() < 0.14 && ( _flag.cvcv !== 4 || (flag.cvcv !== 1 && flag.cvcv !== 2) ) ){
                     /*今*/
                     theji.kakus.push( _t_.igil );
                     theji.cvcvs.push( flag.cvcv );
@@ -228,17 +244,15 @@ ptyol = () => {
                     i++;
 
                     /*上昇部に進む*/
-                    theji.kakus.push( _t_.igil );
                     theji.cvcvs.push( 4 );
                     flag.cvcv = 4;
-
                 }
             }
             flag.kaku += (_t_.igil)
         }
 
         /*たまに問答無用で繰り返すとこ*/
-        if( i !== haku-1 && flag.cvcv === 1 && !_flag.lo && Math.random() < 0.2 ){
+        if( i !== haku-1 && flag.cvcv === 1 && !_flag.lo && Math.random() < 0.2 && !flag.shuon ){
             flag.lo = true;
             theji.kakus.push( flag.kaku );
             theji.cvcvs.push( flag.cvcv );
