@@ -197,7 +197,7 @@ const ptyol = () => {
             /*子音決定*/
             do{
                 _t_ = c[ Math.floor( Math.random() * c.length ) ].copy();
-            } while ( i !== 0 && _flag.cvcv === 0 && ( _t_.shu === "接近" || ["sc", "cs", "sh", "gz", "zg", "gs", "gz", "cj", "jc"].includes( _flag.iqo.igil + _t_.igil ) || _flag.iqo.bui === _t_.bui ) )
+            } while ( i !== 0 && _flag.cvcv === 0 && ( _t_.shu === "接近" || ["sc", "cs", "sh", "gz", "zg", "gs", "gz", "cj", "jc"].includes( _flag.iqo.igil + _t_.igil ) || (_flag.iqo.bui === _t_.bui && _flag.iqo.shu === _t_.shu )) )
 
             /*促音*/
             if( flag.cvcv === 1 && (_flag.cvcv === 1 || _flag.cvcv === 2) && haku !== 1 && i !== 1 && i != haku-1 && ["r","h"].includes( _t_.igil ) && Math.random() < 0.5 ){
@@ -221,7 +221,7 @@ const ptyol = () => {
 
         /*母音*/
         if( flag.cvcv !== 0 ){
-            if( i === 0 && Math.random() < 0.03 ){
+            if( i === 0 && Math.random() < 0.03 && ( flag.cvcv === 1 && bion.includes( _t_ ) ) ){
                 /*音節主音*/
                 _t_ = bion[Math.floor(Math.random() * bion.length)].copy();
                 _t_.shuon = true;
