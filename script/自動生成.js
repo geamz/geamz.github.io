@@ -135,36 +135,35 @@ class Omomi{
     get box(){
         this._box ??= ((omomi)=>{
 
-            const returnee = {
-                av : omomi.ratio.reduce( (a,b)=> a+b ) / omomi.length,
-                index : [],
-                threshold : [...omomi.ratio]
-            };
+            const av = omomi.ratio.reduce( (a,b)=> a+b ) / omomi.length;
 
             const fyne = [];
             const w = [];
 
             for( let i = 0; i < omomi.length; i++ ){
-                if( omomi.ratio[i] <= returnee.av ){
+                if( omomi.ratio[i] <= av ){
                     fyne.push(i);
                 }else{
                     w.push(i);
                 }
             }
             
+            const index = [];
+            const threshold = [...omomi.ratio];
+            
             while( fyne.length !== 0 && w.length !== 0 ){
                 const _fyne = fyne.pop();
                 const _w = w.pop();
-                returnee.index[ _fyne ] = _w;
-                returnee.threshold[ _w ] -= returnee.av - returnee.threshold[ _fyne ];
-                if( returnee.threshold[ _w ] <= returnee.av ){
+                index[ _fyne ] = _w;
+                threshold[ _w ] -= av - threshold[ _fyne ];
+                if( threshold[ _w ] <= av ){
                     fyne.push( _w );
                 }else{
                     w.push( _w );
                 }
             }
 
-            return returnee;
+            return {av, index, threshold};
 
         })(this);
         return this._box;
