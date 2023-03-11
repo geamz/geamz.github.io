@@ -19,41 +19,8 @@ class Con {
 
     copy() {
         return new Con(this.ch, this.bui, this.shu, this.yuu);
-    }
+    } /*ディープコピー*/
 }
-
-const c = [
-    new Con("m", "両唇", "鼻", true),
-    new Con("n", "歯茎", "鼻", true),
-    new Con("p", "両唇", "破裂", false),
-    new Con("b", "両唇", "破裂", true),
-    new Con("t", "歯茎", "破裂", false),
-    new Con("d", "歯茎", "破裂", true),
-    new Con("k", "軟口蓋", "破裂", false),
-    new Con("g", "軟口蓋", "破裂", true),
-    new Con("r", "歯茎", "はじき", true),
-    new Con("f", "唇歯", "摩擦", false),
-    new Con("v", "唇歯", "摩擦", true),
-    new Con("s", "歯茎", "摩擦", false),
-    new Con("z", "歯茎", "摩擦", true),
-    new Con("c", "後部歯茎", "摩擦", false),
-    new Con("g", "後部歯茎", "摩擦", true),
-    new Con("j", "歯茎硬口蓋", "摩擦", true),
-    new Con("x", "軟口蓋", "摩擦", false),
-    new Con("h", "声門", "摩擦", false),
-    new Con("y", "硬口蓋", "接近", true),
-    new Con("w", "軟口蓋", "接近", true),
-    new Con("l", "歯茎", "側面接近", true)
-];
-
-const bion = [
-    new Con("m", "両唇", "鼻", true),
-    new Con("n", "歯茎", "鼻", true),
-];
-
-const q = [
-    new Con("'", "軟口蓋", "破裂", false), /* 今回使わない */
-];
 
 class Vowel {
     constructor(ch, tate, yoko) {
@@ -64,7 +31,41 @@ class Vowel {
     get igil() {
         return this.ch;
     }
+
 }
+
+const c = [
+        new Con("m", "両唇", "鼻", true),
+        new Con("n", "歯茎", "鼻", true),
+        new Con("p", "両唇", "破裂", false),
+        new Con("b", "両唇", "破裂", true),
+        new Con("t", "歯茎", "破裂", false),
+        new Con("d", "歯茎", "破裂", true),
+        new Con("k", "軟口蓋", "破裂", false),
+        new Con("g", "軟口蓋", "破裂", true),
+        new Con("r", "歯茎", "はじき", true),
+        new Con("f", "唇歯", "摩擦", false),
+        new Con("v", "唇歯", "摩擦", true),
+        new Con("s", "歯茎", "摩擦", false),
+        new Con("z", "歯茎", "摩擦", true),
+        new Con("c", "後部歯茎", "摩擦", false),
+        new Con("g", "後部歯茎", "摩擦", true),
+        new Con("j", "歯茎硬口蓋", "摩擦", true),
+        new Con("x", "軟口蓋", "摩擦", false),
+        new Con("h", "声門", "摩擦", false),
+        new Con("y", "硬口蓋", "接近", true),
+        new Con("w", "軟口蓋", "接近", true),
+        new Con("l", "歯茎", "側面接近", true)
+];
+
+const bion = [
+    new Con("m", "両唇", "鼻", true),
+    new Con("n", "歯茎", "鼻", true),
+];
+
+const q = [
+    new Con("'", "軟口蓋", "破裂", false), /* 今回使わない */
+];
 
 const v = [
     new Vowel("a", "広", "前舌"),
@@ -91,29 +92,95 @@ class Theji{
 }
 
 /*べんりだよ*/
-Array.prototype.random = function( omomi=null ) {
-    if( omomi === null || this.length === omomi.length ){
-        let _r_ = Math.random();
-        let i = 0;
+/*重み付き乱択*/
 
-        if( omomi === null ){
-            const p = 1 / this.length;
-            while( _r_ >= p ){
-                _r_ -= p;
-                i++;
-            }
+class Array_Omomi{
+    constructor( ar ){
+        this.ar = ar;
+        this._omomi = new Map();
+    }
+    get length(){
+        return this.ar.length;
+    }
+
+    omomi( key, omomi ){
+        if( this.length === omomi.length ){
+            this._omomi.set( key, new Omomi( omomi ) );
+            return this;
         }else{
-            while( _r_ >= omomi[i] ){
-                _r_ -= omomi[i];
-                i++;
-            }
+            return null;
         }
-
-        return this[i]
-    }else{
-        return null;
+    }
+    random(key){
+        const box = this._omomi.has( key ) ? this._omomi.get(key).box : {
+            av : 1,
+            index : [],
+            threshold : [ ...new Array( this.length ) ].fill( 1 )
+        } ;
+        
+        const _r_ = Math.floor( Math.random() * this.length );
+        return this.ar[
+            box.threshold[ _r_ ] > Math.random() * box.av ? _r_ : box.index[ _r_ ]
+        ];
     }
 }
+
+class Omomi{
+    constructor( ratio ){
+        this.ratio = ratio; /* [1,2]とか */
+    }
+    get length(){
+        return this.ratio.length;
+    }
+    get box(){
+        this._box ??= ((omomi)=>{
+
+            const returnee = {
+                av : omomi.ratio.reduce( (a,b)=> a+b ) / omomi.length,
+                index : [],
+                threshold : [...omomi.ratio]
+            };
+
+            const fyne = [];
+            const w = [];
+
+            for( let i = 0; i < omomi.length; i++ ){
+                if( omomi.ratio[i] <= returnee.av ){
+                    fyne.push(i);
+                }else{
+                    w.push(i);
+                }
+            }
+            
+            while( fyne.length !== 0 && w.length !== 0 ){
+                const _fyne = fyne.pop();
+                const _w = w.pop();
+                returnee.index[ _fyne ] = _w;
+                returnee.threshold[ _w ] -= returnee.av - returnee.threshold[ _fyne ];
+                if( returnee.threshold[ _w ] <= returnee.av ){
+                    fyne.push( _w );
+                }else{
+                    w.push( _w );
+                }
+            }
+
+            return returnee;
+
+        })(this);
+        return this._box;
+    }
+}
+
+const rantaku = {
+    haku : new Array_Omomi( [...Array(6)].map((_, i) => i+1) ).omomi( "normal", [0.03, 0.21, 0.51, 0.24, 0.005, 0.005] ),
+    cvcv : new Array_Omomi(["C","CV","V"]).omomi( "normal", [ 0.15, 0.50, 0.35] ),
+    c    : new Array_Omomi( c ),
+    v    : new Array_Omomi( v ),
+    bion : new Array_Omomi( bion )
+};
+Object.freeze(rantaku);
+
+/*重み付き乱択おわり*/
 
 /*作る関数*/
 const ptyol = () => {
@@ -124,7 +191,7 @@ const ptyol = () => {
 
 
     /*拍数決め*/
-    const haku = [...Array(6)].map((_, i) => i+1).random( [0.03, 0.21, 0.51, 0.24, 0.005, 0.005] );
+    const haku = rantaku.haku.random("normal");
     
     const all_open = Math.random() < 0.3;
 
@@ -171,7 +238,7 @@ const ptyol = () => {
                 flag.cvcv = "CV";
             }
         }else{
-            flag.cvcv = ["C","CV","V"].random([ 0.15, 0.50, 0.35] );
+            flag.cvcv = rantaku.cvcv.random( "normal" );
 
             if( (_flag.cvcv === "C" && flag.cvcv === "V") || ( flag.cc && flag.cvcv === "C" && Math.random() < 0.8 ) ){
                 flag.cvcv = "CV";
@@ -189,14 +256,14 @@ const ptyol = () => {
         let _t_;
 
         /*子音決定*/
-        if( (flag.cvcv).includes("C") ){
+        if( flag.cvcv.includes("C") ){
 
             do{
-                _t_ = c.random().copy();
+                _t_ = rantaku.c.random().copy();
             } while ( i !== 0 && ( ["sc", "cs", "gz", "zg", "gs", "gz", "cj", "jc"].includes( _flag.iqo.igil + _t_.igil ) ) )
 
             /*促音*/
-            if( i !== 0 && flag.cvcv === "CV" && _flag.cvcv.includes("V") && i != haku-1 && !["r","h"].includes( _t_.igil ) && Math.random() < 0.3 ){
+            if( i !== 0 && flag.cvcv === "CV" && _flag.cvcv.includes("V") && i != haku-1 && Math.random() < 0.3 ){
                 theji.kakus.push( _t_.igil );
                 theji.cvcvs.push( "Q" );
                 i++;
@@ -210,14 +277,14 @@ const ptyol = () => {
         if( flag.cvcv.includes("V") ){
             if( i === 0 && Math.random() < 0.06 && ( flag.cvcv === "CV" && !bion.includes( _t_ ) ) ){
                 /*音節主音*/
-                _t_ = bion.random().copy();
+                _t_ = rantaku.bion.random();
                 _t_.shuon = true;
                 flag.shuon = true;
             }else{
                 /*母音*/
 
                 do{
-                    _t_ = v.random();
+                    _t_ = rantaku.v.random();
                 } while ( i !== 0 && /*二重連続母音は事前に回避*/ _flag.iqo === _t_ )
                 
                 /*二重連続母音*/
@@ -262,6 +329,8 @@ const ptyol = () => {
 
 };
 
+
+/*おまけ*/
 /* コンソールに o 個の単語を出力 */
 const nhol = (o) => { for (i = 0; i < o; i++){const oo = ptyol();console.log(oo.igil);} };
 
