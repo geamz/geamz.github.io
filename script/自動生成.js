@@ -106,7 +106,7 @@ class Array_Omomi{
     omomi( key, omomi ){
         if( this.length === omomi.length ){
             this._omomi.set( key, new Omomi( omomi ) );
-            return this;
+            return this; /*チェーンできる*/
         }else{
             return null;
         }
