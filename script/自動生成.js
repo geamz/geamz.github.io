@@ -112,7 +112,7 @@ class Array_Omomi{
         }
     }
     random(key){
-        const box = this._omomi.has( key ) ? this._omomi.get(key).box : {
+        const {av, index, threshold} = this._omomi.has( key ) ? this._omomi.get(key).box : {
             av : 1,
             index : [],
             threshold : [ ...new Array( this.length ) ].fill( 1 )
@@ -120,7 +120,7 @@ class Array_Omomi{
         
         const _r_ = Math.floor( Math.random() * this.length );
         return this.ar[
-            box.threshold[ _r_ ] > Math.random() * box.av ? _r_ : box.index[ _r_ ]
+            threshold[ _r_ ] > Math.random() * av ? _r_ : index[ _r_ ]
         ];
     }
 }
