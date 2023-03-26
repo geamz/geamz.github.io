@@ -182,13 +182,11 @@ ptyol = do
                         (\  y -> CV Nothing  (Just y)) <$>                  rantaku cv_sh
                     else
                         (\  y -> CV Nothing  (Just y)) <$>                  rantaku cv_v
-                pt''  _                     h   =  un h
 
-                un :: Haku' -> IO Haku
-                un C' = (\x   -> CV (Just x) Nothing)  <$> rantaku cv_c
-                un CV'= (\x y -> CV (Just x) (Just y)) <$> rantaku cv_c <*> rantaku cv_v
-                un V' = (\  y -> CV Nothing  (Just y)) <$>                  rantaku cv_v
-                un Q' = (\x   -> Q   x               ) <$> rantaku cv_c
+                pt''  _ C' = (\x   -> CV (Just x) Nothing)  <$> rantaku cv_c
+                pt''  _ CV'= (\x y -> CV (Just x) (Just y)) <$> rantaku cv_c <*> rantaku cv_v
+                pt''  _ V' = (\  y -> CV Nothing  (Just y)) <$>                  rantaku cv_v
+                pt''  _ Q' = (\x   -> Q   x               ) <$> rantaku cv_c
 
 
 main :: IO ()
