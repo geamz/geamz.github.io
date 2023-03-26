@@ -152,7 +152,7 @@ o_vcvm  = box [0.15, 0.50, 0.35, 0.05] [C', CV', V', Q']
 ptyol :: IO [Haku]
 ptyol = do
             haku_n  <- rantaku haku
-            iterateM (haku_n+1) pt' O >>= return
+            iterateM (haku_n+1) pt' O
             where
 
                 pt' :: Haku -> IO Haku
