@@ -134,7 +134,8 @@ cv_v    = box (repeat 1.0) [
     Vowel "a" Hiro Mae,
     Vowel "i" Sema Mae,
     Vowel "u" Sema Ato,
-    Vowel "e" Chuo Mae
+    Vowel "e" Chuo Mae,
+    Vowel "o" Chuo Ato
     ]
 
 cv_sh = box (repeat 1.0) [
@@ -144,8 +145,7 @@ cv_sh = box (repeat 1.0) [
 
 
 o_ojv   = box [0.15, 0.50, 0.35] [C', CV', V']
-o_q     = box [0.15, 0.50      ] [C', CV'    ]
-o_c     = box [0.15, 0.50, 0.10] [C', CV', Q']
+o_cq    = box [0.15, 0.50] [C', CV']
 o_vcv   = box [0.15, 0.50, 0.35, 0.20, 0.10] [C', CV', V', JV', Q']
 o_vcvm  = box [0.15, 0.50, 0.35, 0.05] [C', CV', V', Q']
 
@@ -158,8 +158,8 @@ ptyol = do
                 pt' :: Haku -> IO Haku
                 pt'      O                      = rantaku o_ojv  >>= pt'' O 
                 pt'  jv@(JV _)                  = rantaku o_ojv  >>= pt'' jv
-                pt'   q@(Q _)                   = rantaku o_q    >>= pt'' q
-                pt'   c@(CV _  Nothing)         = rantaku o_c    >>= pt'' c
+                pt'   q@(Q _)                   = rantaku o_cq   >>= pt'' q
+                pt'   c@(CV _  Nothing)         = rantaku o_cq   >>= pt'' c
                 pt' vcv@(CV _ (Just (Shuon _))) = rantaku o_vcvm >>= pt'' vcv
                 pt' vcv@(CV _ (Just _))         = rantaku o_vcv  >>= pt'' vcv
 
