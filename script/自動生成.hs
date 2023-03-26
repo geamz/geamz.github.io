@@ -31,7 +31,7 @@ instance Phoneme Vowel where
     ch (Shuon con    ) = (ch con) ++ "'"
 
 
---拍(生成用)
+--拍(符号用)
 
 data Haku' = C' | CV' | V' | Q' | JV' | O' deriving (Show, Eq)
 
@@ -39,6 +39,23 @@ data Haku' = C' | CV' | V' | Q' | JV' | O' deriving (Show, Eq)
 
 data Haku = CV (Maybe Con) (Maybe Vowel) | Q Con | JV Vowel | O deriving (Show, Eq)  --Oで文おｋかも
 
+--つくる
+_c c = CV (Just c) Nothing
+_v   = CV Nothing . Just
+_cv  = ( . Just ) . CV . Just
+
+{-使わんかった
+--判定する
+phitl :: Haku -> Haku'
+phitl (CV (Just _ ) (Just _ )) = CV'
+phitl (CV (Just _ )  _       ) = C'
+phitl (CV  _        (Just _ )) = V'
+phitl (Q _)                    = Q'
+phitl (JV _)                   = JV'
+phitl  O                       = O'
+-}
+
+--みる
 igil :: Haku -> Maybe String
 igil (CV mc mv) = (ch <$> mc) <> (ch <$> mv)
 igil (Q  c    ) = pure $ ch c
@@ -55,9 +72,9 @@ rantaku ((av, omojbox), elj) = do
     et <- randomRIO (0, length omojbox - 1) :: IO Int
     qa <- randomRIO (0, av) :: IO Double
 
-    return $ rantaku' qa elj av $ omojbox !! et
+    return $ rantaku' qa elj $ omojbox !! et
         where
-            rantaku' r elj av ( threshold, bottom, top )
+            rantaku' r elj ( threshold, bottom, top )
                 | r < threshold = elj !! bottom
                 | otherwise     = elj !! top
 
@@ -98,7 +115,7 @@ box = (box' .) . coop
 -- 作るよ
 
 
-
+-- なぜかなかった
 iterateM :: (Monad m) => Int -> (a -> m a) -> a -> m [a]
 iterateM cnt f a
     | cnt <= 0  = pure []
@@ -130,6 +147,7 @@ cv_c    = box (repeat 1.0) [
     Con "w" Nankougai Sekkin True,
     Con "l" Haguki Sokumensekkin True
     ]
+
 cv_v    = box (repeat 1.0) [
     Vowel "a" Hiro Mae,
     Vowel "i" Sema Mae,
@@ -152,41 +170,36 @@ o_vcvm  = box [0.15, 0.50, 0.35, 0.05] [C', CV', V', Q']
 ptyol :: IO [Haku]
 ptyol = do
             haku_n  <- rantaku haku
-            iterateM (haku_n+1) pt' O
+            iterateM (haku_n+1) (liftM2 (>>=) nextHaku' nextHaku) O
             where
+                -- 次の拍の種類を決める
+                nextHaku' :: Haku -> IO Haku'
+                nextHaku'  O                      = rantaku o_ojv
+                nextHaku' (JV _)                  = rantaku o_ojv
+                nextHaku' (Q _)                   = rantaku o_cq
+                nextHaku' (CV _  Nothing)         = rantaku o_cq
+                nextHaku' (CV _ (Just (Shuon _))) = rantaku o_vcvm
+                nextHaku' (CV _ (Just _))         = rantaku o_vcv
 
-                pt' :: Haku -> IO Haku
-                pt'      O                      = rantaku o_ojv  >>= pt'' O 
-                pt'  jv@(JV _)                  = rantaku o_ojv  >>= pt'' jv
-                pt'   q@(Q _)                   = rantaku o_cq   >>= pt'' q
-                pt'   c@(CV _  Nothing)         = rantaku o_cq   >>= pt'' c
-                pt' vcv@(CV _ (Just (Shuon _))) = rantaku o_vcvm >>= pt'' vcv
-                pt' vcv@(CV _ (Just _))         = rantaku o_vcv  >>= pt'' vcv
-
-                pt'' :: Haku -> Haku' -> IO Haku
-                pt'' (JV           v      ) V'  = (\  y -> CV Nothing  (Just y)) <$>                   ranavo [v] cv_v
-                pt'' (CV (Just c)  Nothing) C'  = (\x   -> CV (Just x) Nothing)  <$> ranavo [c] cv_c
-                pt'' (CV (Just c)  Nothing) CV' = (\x y -> CV (Just x) (Just y)) <$> ranavo [c] cv_c <*> rantaku cv_v
-                pt'' (CV  _       (Just v)) V'  = (\  y -> CV Nothing  (Just y)) <$>                   ranavo [v] cv_v
-                pt'' (CV  _       (Just v)) JV' =  return (JV v)
-                pt'' (Q   c               ) CV' = (\  y -> CV (Just c) (Just y)) <$>                   rantaku cv_v
-                pt''  O                     CV' = do
+                -- 次の拍を作る
+                nextHaku :: Haku -> Haku' -> IO Haku
+                nextHaku (JV           v      ) V'  = _v    <$>                     ranavo [v] cv_v
+                nextHaku (CV (Just c)  Nothing) C'  = _c    <$> ranavo [c] cv_c
+                nextHaku (CV (Just c)  Nothing) CV' = _cv   <$> ranavo [c] cv_c <*> rantaku cv_v
+                nextHaku (CV  _       (Just v)) V'  = _v    <$>                     ranavo [v] cv_v
+                nextHaku (CV  _       (Just v)) JV' = return (JV v)
+                nextHaku (Q   c               ) CV' = _cv c <$>                     rantaku cv_v
+                nextHaku  O                     CV' = do
                     r <- randomRIO (0.0,1.0) :: IO Double
-                    if r < 0.02 then
-                        (\x y -> CV (Just x) (Just y)) <$> rantaku cv_c <*> rantaku cv_sh
-                    else
-                        (\x y -> CV (Just x) (Just y)) <$> rantaku cv_c <*> rantaku cv_v
-                pt''  O                     V'  = do
+                    _cv <$> rantaku cv_c <*> rantaku (if r < 0.02 then cv_sh else cv_v)
+                nextHaku  O                     V'  = do
                     r <- randomRIO (0.0,1.0) :: IO Double
-                    if r < 0.06 then
-                        (\  y -> CV Nothing  (Just y)) <$>                  rantaku cv_sh
-                    else
-                        (\  y -> CV Nothing  (Just y)) <$>                  rantaku cv_v
+                    _v  <$>                  rantaku (if r < 0.06 then cv_sh else cv_v)
 
-                pt''  _ C' = (\x   -> CV (Just x) Nothing)  <$> rantaku cv_c
-                pt''  _ CV'= (\x y -> CV (Just x) (Just y)) <$> rantaku cv_c <*> rantaku cv_v
-                pt''  _ V' = (\  y -> CV Nothing  (Just y)) <$>                  rantaku cv_v
-                pt''  _ Q' = (\x   -> Q   x               ) <$> rantaku cv_c
+                nextHaku  _ C' = _c  <$> rantaku cv_c
+                nextHaku  _ CV'= _cv <$> rantaku cv_c <*> rantaku cv_v
+                nextHaku  _ V' = _v  <$>                  rantaku cv_v
+                nextHaku  _ Q' = Q   <$> rantaku cv_c
 
 
 main :: IO ()
