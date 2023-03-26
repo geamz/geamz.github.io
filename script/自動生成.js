@@ -32,6 +32,9 @@ class Vowel {
         return this.ch;
     }
 
+    copy() {
+        return new Vowel( this.ch, this.tate, this.yoko );
+    }
 }
 
 const c = [
@@ -42,7 +45,7 @@ const c = [
         new Con("t", "歯茎", "破裂", false),
         new Con("d", "歯茎", "破裂", true),
         new Con("k", "軟口蓋", "破裂", false),
-        new Con("g", "軟口蓋", "破裂", true),
+        new Con("q", "軟口蓋", "破裂", true),
         new Con("r", "歯茎", "はじき", true),
         new Con("f", "唇歯", "摩擦", false),
         new Con("v", "唇歯", "摩擦", true),
@@ -276,14 +279,14 @@ const ptyol = () => {
         if( flag.cvcv.includes("V") ){
             if( i === 0 && Math.random() < 0.06 && ( flag.cvcv === "CV" && !bion.includes( _t_ ) ) ){
                 /*音節主音*/
-                _t_ = rantaku.bion.random();
+                _t_ = rantaku.bion.random().copy();
                 _t_.shuon = true;
                 flag.shuon = true;
             }else{
                 /*母音*/
 
                 do{
-                    _t_ = rantaku.v.random();
+                    _t_ = rantaku.v.random().copy();
                 } while ( i !== 0 && /*二重連続母音は事前に回避*/ _flag.iqo === _t_ )
                 
                 /*二重連続母音*/
