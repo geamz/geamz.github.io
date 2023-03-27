@@ -44,17 +44,6 @@ _c c = CV (Just c) Nothing
 _v   = CV Nothing . Just
 _cv  = ( . Just ) . CV . Just
 
-{-使わんかった
---判定する
-phitl :: Haku -> Haku'
-phitl (CV (Just _ ) (Just _ )) = CV'
-phitl (CV (Just _ )  _       ) = C'
-phitl (CV  _        (Just _ )) = V'
-phitl (Q _)                    = Q'
-phitl (JV _)                   = JV'
-phitl  O                       = O'
--}
-
 --みる
 igil :: Haku -> Maybe String
 igil (CV mc mv) = (ch <$> mc) <> (ch <$> mv)
@@ -88,10 +77,8 @@ ranavo as bo = do
 
 
 box :: [Double] -> [b] -> ((Double, [(Double, Int, Int)]), [b])
-box = (box' .) . coop
+box a b = box' $ unzip $ zip a b 
     where
-        coop = (unzip .) . zip
-
         box' :: (Fractional a, Real a) => ([a], [b]) -> ((a, [(a, Int, Int)]), [b])
         box' (omoj, elj) = let av = (realToFrac $ sum omoj) / fromIntegral (length omoj)
                     in (box'' av ( wfyne av ( zip [0..] omoj ) , [] ), elj)
@@ -195,7 +182,6 @@ ptyol = do
                 nextHaku  O                     V'  = do
                     r <- randomRIO (0.0,1.0) :: IO Double
                     _v  <$>                  rantaku (if r < 0.06 then cv_sh else cv_v)
-
                 nextHaku  _ C' = _c  <$> rantaku cv_c
                 nextHaku  _ CV'= _cv <$> rantaku cv_c <*> rantaku cv_v
                 nextHaku  _ V' = _v  <$>                  rantaku cv_v
