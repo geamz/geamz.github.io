@@ -21,7 +21,7 @@
 ---
 
 Pnya. Wa-igea 'ac "geamzwa" putyoen ibl myee, 2022 ivro.
-Le nani-"tanaka geamz hitoci" putyol myee honu oj bub kyommul "Geamz" 'ac nkorila.
+Le nani-"tanaka geamz hitoci" putyol myee oj honu bub kyommul "Geamz" 'ac nkorila.
 
 <img alt="tanaka geamz hitoci" src="./cavg/geamz.png"></img>
 
