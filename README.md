@@ -32,7 +32,7 @@ Geamzwa putyol 'ik mwtl i xons likken bubl.
 * moku
 * nniyu 'e peppee
 
-Ir umli, "甘いリンゴ" yitxl 'etteg re, nun "m'tca nol nno ya bi, ya yitam m'tca, 'ac ya" 'ik fo, nun "m'tca-niz nol ya-sikm nmen, us m'tca 'e ya tulanye," jlu nihonwa mwtl i odl-niz. Qyema 'aa de-phitla noxal litm (nif). 
+Ir umli, "甘いリンゴ" yitxl 'etteg re, nun "m'tca nol nno ya bi, ya yitam m'tca, 'ac ya" 'ik fo, nun "m'tca-niz nol ya-sikm nmen, us m'tca 'e ya tulanye" 'ik jlu nihonwa mwtl i odl-niz. Qyema 'aa de-phitla noxal litm (nif). 
 
 Geamzwa n'ga, nunu noli gins 'ac le "m'tca 'ac ya" ko, xons 'ac le "m'tca 'e ya" ko yitx-ricapen pul.
 
