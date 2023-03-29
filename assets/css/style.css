@@ -6,6 +6,7 @@ section {
 }
 p{
   line-height: 1.5rem;
+  text-indent: 1em;
 }
 
 html {overflow-x: initial !important;}:root { --bg-color:#ffffff; --text-color:#333333; --select-text-bg-color:#B5D6FC; --select-text-font-color:auto; --monospace:"Lucida Console",Consolas,"Courier",monospace; --title-bar-height:20px; }
