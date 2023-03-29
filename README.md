@@ -27,13 +27,13 @@ Le nani-"tanaka geamz hitoci" putyol myee oj honu bub kyommul "Geamz" 'ac nkoril
 
 Ogeji re ypii ogolniz, yunii.
 
-Geamzwa putyol 'ik mwtl i xons likken bubl.
+Geamzwa putyol 'ik mwtl i xons-ca likken bubl.
 * yitxma leit qyema re de-phitla kcahyon-watl
 * moku
 * nniyu 'e peppee
 
 Ir umli, "甘いリンゴ" yitxl 'etteg re, nun "m'tca nol nno ya bi, ya yitam m'tca, 'ac ya" 'ik fo, nun "m'tca-niz nol ya-sikm nmen, us m'tca 'e ya tulanye" 'ik jlu nihonwa mwtl i odl-niz. Qyema 'aa de-phitla noxal litm (nif). 
 
-Geamzwa n'ga, nunu noli gins 'ac le "m'tca 'ac ya" ko, xons 'ac le "m'tca 'e ya" ko yitx-ricapen pul.
+Geamzwa n'ga, nunu noli gins 'ac le "m'tca 'ac ya" ko, xons 'ac le "m'tca 'e ya" ko ricapen pul.
 
 Kukuli yataa 'e putyola nmen, kokonilwo.
