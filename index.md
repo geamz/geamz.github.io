@@ -3,7 +3,7 @@
 こんにちは。私たちは人工言語「ジェームズ語」を2022年から開発しています。
 「ジェームズ」という名前は、私たちの作ったキャラクター「田中・ジェームズ・日都市」に由来します。
 
-<img alt="田中・ジェームズ・日都市" src="./cavg/geamz.png">
+<img alt="田中・ジェームズ・日都市" src="./assets/cavg/geamz.png">
 
 実際の文法とはあまり関係がありません。
 
@@ -23,7 +23,7 @@
 Pnya. Wa-igea 'ac "geamzwa" putyoen ibl myee, 2022 ivro.
 Le nani-"tanaka geamz hitoci" putyol myee oj honu bub kyommul "Geamz" 'ac nkorila.
 
-<img alt="tanaka geamz hitoci" src="./cavg/geamz.png">
+<img alt="tanaka geamz hitoci" src="./assets/cavg/geamz.png">
 
 Ogeji re ypii ogolniz, yunii.
 
